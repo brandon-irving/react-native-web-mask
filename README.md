@@ -20,13 +20,13 @@ A **cross-platform** React and React Native hook for handling masked input field
 ### NPM
 
 ```bash
-npm install use-input-mask
+npm install react-native-web-mask
 ```
 
 ### YARN
 
 ```bash
-yarn add use-input-mask
+yarn add react-native-web-mask
 ```
 
 ---
@@ -37,7 +37,7 @@ yarn add use-input-mask
 
 ```tsx
 import React from "react";
-import { useInputMask } from "use-input-mask";
+import { useInputMask } from "react-native-web-mask";
 
 function PhoneInput() {
   const { maskedValue, rawValue, onChange } = useInputMask({
@@ -66,7 +66,7 @@ export default PhoneInput;
 ```tsx
 import React from "react";
 import { View, TextInput, Text, StyleSheet } from "react-native";
-import { useInputMask } from "use-input-mask";
+import { useInputMask } from "react-native-web-mask";
 
 export default function PhoneInput() {
   const { maskedValue, rawValue, onChangeText } = useInputMask({
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
 
 ```tsx
 import React from "react";
-import { useInputMask } from "use-input-mask";
+import { useInputMask } from "react-native-web-mask";
 
 function CustomMaskInput() {
   const customMask = (value: string) => value.toUpperCase().slice(0, 6);
