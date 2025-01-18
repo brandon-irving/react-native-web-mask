@@ -1,0 +1,42 @@
+{
+  "name": "react-native-web-mask",
+  "version": "1.0.0",
+  "description": "A cross-platform input mask hook for React and React Native, with TypeScript and helper utilities",
+  "author": "Brandon Irving <birvingfau@gmail.com>",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build",
+    "test": "jest"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "react-native",
+    "mask",
+    "input",
+    "typescript"
+  ],
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@types/jest": "^29.5.14",
+    "@types/react": "^19.0.7",
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "rollup": "^3.0.0",
+    "ts-jest": "^29.0.0",
+    "typescript": "^5.7.3"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  }
+}
