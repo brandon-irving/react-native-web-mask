@@ -64,7 +64,10 @@ describe("maskHelpers", () => {
 
   describe("parseCurrencyToNumber", () => {
     it("should convert currency strings to numbers", () => {
-      expect(parseCurrencyToNumber("0")).toBe(0);
+      expect(parseCurrencyToNumber("$123.23")).toBe(123.23);
+      expect(parseCurrencyToNumber("$123.23")).toBe(123.23);
+      expect(parseCurrencyToNumber("0.88")).toBe(0.88);
+      expect(parseCurrencyToNumber("0.00")).toBe(0);
       expect(parseCurrencyToNumber("$100.00")).toBe(100);
       expect(parseCurrencyToNumber("$1,230.30")).toBe(1230.3);
     });

@@ -84,7 +84,7 @@ export function clampDigits(
 
 /**
  * Takes a string that is expected to contain a currency value and extracts
- * the number from it. Any non-numeric characters are removed and the
+ * the decimal equivalent from it. Any non-numeric characters are removed and the
  * result is parsed as a float. If the result is NaN, returns 0.
  *
  * @param {string} currency - The currency string to parse
@@ -92,6 +92,8 @@ export function clampDigits(
  */
 export function parseCurrencyToNumber(currency: string): number {
   if (!currency) return 0;
+  // Remove non-numeric characters except '.' and '-'
   const numericString = currency.replace(/[^0-9.-]/g, "").trim();
+  // Parse it into a float and return
   return parseFloat(numericString) || 0;
 }
