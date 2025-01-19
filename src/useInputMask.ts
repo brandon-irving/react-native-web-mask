@@ -56,9 +56,7 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
         case "monthDay":
           return maskMonthDay;
         case "money":
-          return (value: string) => {
-            return maskMoney(value);
-          };
+          return maskMoney;
         case "custom":
           return customMask || defaultMask;
         default:
@@ -92,16 +90,19 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
         setMaskedValue(newRawValue);
         return;
       }
+
       newRawValue = clampRawValueByMaskType(maskType, newRawValue);
 
       const maskFn = getMaskFunction(maskType);
       const newMaskedValue = maskFn(newRawValue);
 
-      setRawValue(
-        maskType === "money"
-          ? `${parseCurrencyToNumber(newRawValue)}`
-          : newRawValue
-      );
+      if (maskType === "money") {
+        const parsedValue = parseCurrencyToNumber(newMaskedValue); // Parse back the raw number
+        setRawValue(parsedValue.toFixed(2)); // Store as a decimal (e.g., "100.00")
+      } else {
+        setRawValue(newRawValue);
+      }
+
       setMaskedValue(newMaskedValue);
     },
     [getMaskFunction, maskType]

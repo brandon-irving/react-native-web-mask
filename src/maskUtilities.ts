@@ -30,16 +30,15 @@ export const maskMoney: MaskFn = (value) => {
   const digitsOnly = value.replace(/\D/g, "");
 
   if (!digitsOnly) {
-    return "";
+    return "0.00";
   }
-  const cents = parseInt(digitsOnly, 10);
 
-  const dollarValue = cents / 100;
-
+  // Convert the digits to a dollar format
+  const dollarValue = parseFloat(digitsOnly) / 100;
   const dollarString = dollarValue.toFixed(2);
 
+  // Add commas for thousands
   let [integerPart, decimalPart] = dollarString.split(".");
-
   integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
   return `${integerPart}.${decimalPart}`;

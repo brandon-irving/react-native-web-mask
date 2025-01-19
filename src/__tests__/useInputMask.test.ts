@@ -7,6 +7,17 @@ const generateFakeEvent = (value: string) =>
     },
   } as React.ChangeEvent<HTMLInputElement>);
 describe("useInputMask (Web onChange tests)", () => {
+  it("should handle changes for money mask via onChange (web) with 0 input", () => {
+    const { result } = renderHook(() => useInputMask({ maskType: "money" }));
+
+    act(() => {
+      result.current.onChange(generateFakeEvent("100"));
+    });
+
+    expect(result.current.rawValue).toBe("1.00");
+    expect(result.current.maskedValue).toBe("1.00");
+  });
+
   it("should handle changes for phone mask via onChange (web)", () => {
     const { result } = renderHook(() => useInputMask({ maskType: "phone" }));
 
@@ -65,7 +76,7 @@ describe("'useInputMask (React Native onChangeText tests)", () => {
     act(() => {
       result.current.onChangeText("12345");
     });
-    expect(result.current.rawValue).toBe("12345");
+    expect(result.current.rawValue).toBe("123.45");
     expect(result.current.maskedValue).toBe("123.45");
   });
 
