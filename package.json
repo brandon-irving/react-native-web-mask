@@ -1,6 +1,6 @@
 {
   "name": "react-native-web-mask",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A cross-platform input mask hook for React and React Native, with TypeScript and helper utilities",
   "author": "Brandon Irving <birvingfau@gmail.com>",
   "license": "MIT",
