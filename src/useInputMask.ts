@@ -1,4 +1,5 @@
 import { ChangeEvent, useCallback, useState } from "react";
+import { parseCurrencyToNumber } from "./maskHelpers";
 import {
   clampRawValueByMaskType,
   defaultMask,
@@ -28,7 +29,7 @@ import {
  * const { rawValue, maskedValue, onChange } = useInputMask({ maskType: "phone" });
  * return (
  *   <input type="text" value={maskedValue} onChange={onChange} />
- )
+ * )
  *
  * // React Native
  * const { rawValue, maskedValue, onChangeText } = useInputMask({ maskType: "phone" });
@@ -46,8 +47,6 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
       switch (type) {
         case "phone":
           return maskPhone;
-        case "money":
-          return maskMoney;
         case "card":
           return maskCard;
         case "zip":
@@ -56,6 +55,10 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
           return maskDate;
         case "monthDay":
           return maskMonthDay;
+        case "money":
+          return (value: string) => {
+            return maskMoney(value);
+          };
         case "custom":
           return customMask || defaultMask;
         default:
@@ -94,7 +97,11 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
       const maskFn = getMaskFunction(maskType);
       const newMaskedValue = maskFn(newRawValue);
 
-      setRawValue(newRawValue);
+      setRawValue(
+        maskType === "money"
+          ? `${parseCurrencyToNumber(newRawValue)}`
+          : newRawValue
+      );
       setMaskedValue(newMaskedValue);
     },
     [getMaskFunction, maskType]

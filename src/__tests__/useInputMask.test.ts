@@ -63,10 +63,10 @@ describe("'useInputMask (React Native onChangeText tests)", () => {
     const { result } = renderHook(() => useInputMask({ maskType: "money" }));
 
     act(() => {
-      result.current.onChangeText("1234.5");
+      result.current.onChangeText("12345");
     });
-    expect(result.current.rawValue).toBe("1234.5");
-    expect(result.current.maskedValue).toBe("1,234.50");
+    expect(result.current.rawValue).toBe("12345");
+    expect(result.current.maskedValue).toBe("123.45");
   });
 
   it("should clamp date length to 10 characters (MM/DD/YYYY)", () => {

@@ -81,3 +81,17 @@ export function clampDigits(
   if (numValue > max) return String(max);
   return numericString;
 }
+
+/**
+ * Takes a string that is expected to contain a currency value and extracts
+ * the number from it. Any non-numeric characters are removed and the
+ * result is parsed as a float. If the result is NaN, returns 0.
+ *
+ * @param {string} currency - The currency string to parse
+ * @returns {number} The parsed number, or 0 if parsing fails
+ */
+export function parseCurrencyToNumber(currency: string): number {
+  if (!currency) return 0;
+  const numericString = currency.replace(/[^0-9.-]/g, "").trim();
+  return parseFloat(numericString) || 0;
+}

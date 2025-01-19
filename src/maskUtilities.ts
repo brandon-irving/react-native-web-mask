@@ -24,18 +24,25 @@ export const maskPhone: MaskFn = (value) => {
  * @param {string} value the value to format
  * @returns {string} the formatted value
  * @example
- * maskMoney("1234.56") -> "1,234.56"
+ * maskMoney("123456") -> "1,234.56"
  */
 export const maskMoney: MaskFn = (value) => {
-  const numericValue = value.replace(/[^\d.]/g, "");
-  let floatValue = parseFloat(numericValue || "0");
-  if (isNaN(floatValue)) floatValue = 0;
+  const digitsOnly = value.replace(/\D/g, "");
 
-  return floatValue.toLocaleString("en-US", {
-    style: "decimal",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  if (!digitsOnly) {
+    return "";
+  }
+  const cents = parseInt(digitsOnly, 10);
+
+  const dollarValue = cents / 100;
+
+  const dollarString = dollarValue.toFixed(2);
+
+  let [integerPart, decimalPart] = dollarString.split(".");
+
+  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+  return `${integerPart}.${decimalPart}`;
 };
 
 /**

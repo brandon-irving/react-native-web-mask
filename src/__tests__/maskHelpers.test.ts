@@ -3,6 +3,7 @@ import {
   clampDigits,
   insertChunks,
   limitLength,
+  parseCurrencyToNumber,
   stripNonDigits,
 } from "../maskHelpers";
 
@@ -58,6 +59,14 @@ describe("maskHelpers", () => {
     it("should do nothing if within range", () => {
       expect(clampDigits("5", 1, 12)).toBe("5");
       expect(clampDigits("12", 1, 12)).toBe("12");
+    });
+  });
+
+  describe("parseCurrencyToNumber", () => {
+    it("should convert currency strings to numbers", () => {
+      expect(parseCurrencyToNumber("0")).toBe(0);
+      expect(parseCurrencyToNumber("$100.00")).toBe(100);
+      expect(parseCurrencyToNumber("$1,230.30")).toBe(1230.3);
     });
   });
 });
