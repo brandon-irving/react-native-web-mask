@@ -12,7 +12,8 @@
     "prepublishOnly": "npm run build",
     "update": "npm version patch",
     "minor": "npm version minor",
-    "major": "npm version major"
+    "major": "npm version major",
+    "test": "jest"
   },
   "files": [
     "dist"
