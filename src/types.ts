@@ -10,7 +10,7 @@ export type MaskType =
   | "custom";
 
 export interface UseInputMaskProps {
-  maskType: MaskType;
+  maskType?: MaskType;
   initialValue?: string;
   customMask?: (value: string) => string;
 }

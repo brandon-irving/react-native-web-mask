@@ -126,4 +126,14 @@ describe("useInputMask", () => {
     expect(result.current.rawValue).toBe("5555555555");
     expect(result.current.maskedValue).toBe("(555) 555-5555");
   });
+
+  it("should return raw value if no mask type is provided", () => {
+    const { result } = renderHook(() => useInputMask());
+
+    act(() => {
+      result.current.setValue("5555555555");
+    });
+    expect(result.current.rawValue).toBe("5555555555");
+    expect(result.current.maskedValue).toBe("5555555555");
+  });
 });

@@ -36,11 +36,8 @@ import {
  *   <TextInput value={maskedValue} onChangeText={onChangeText} />
  * )
  */
-export function useInputMask({
-  maskType,
-  initialValue = "",
-  customMask,
-}: UseInputMaskProps): UseInputMaskReturn {
+export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
+  const { maskType, initialValue = "", customMask } = props || {};
   const [rawValue, setRawValue] = useState<string>(initialValue);
 
   // Helper to pick the correct mask function
@@ -69,8 +66,11 @@ export function useInputMask({
   );
 
   const [maskedValue, setMaskedValue] = useState<string>(() => {
-    const clampValue = clampRawValueByMaskType(maskType, initialValue);
-    const maskFn = getMaskFunction(maskType);
+    const clampValue = clampRawValueByMaskType(
+      maskType || "custom",
+      initialValue
+    );
+    const maskFn = getMaskFunction(maskType || "custom");
     return maskFn(clampValue);
   });
 
@@ -84,6 +84,11 @@ export function useInputMask({
         newRawValue = input as string;
       }
 
+      if (!maskType) {
+        setRawValue(newRawValue);
+        setMaskedValue(newRawValue);
+        return;
+      }
       newRawValue = clampRawValueByMaskType(maskType, newRawValue);
 
       const maskFn = getMaskFunction(maskType);
@@ -97,6 +102,11 @@ export function useInputMask({
 
   const setValue = useCallback(
     (newRaw: string) => {
+      if (!maskType) {
+        setRawValue(newRaw);
+        setMaskedValue(newRaw);
+        return;
+      }
       const clampedRaw = clampRawValueByMaskType(maskType, newRaw);
       const maskFn = getMaskFunction(maskType);
       setRawValue(clampedRaw);
