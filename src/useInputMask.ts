@@ -102,7 +102,7 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
       } else {
         setRawValue(newRawValue);
       }
-
+      props?.onChange?.(rawValue);
       setMaskedValue(newMaskedValue);
     },
     [getMaskFunction, maskType]
