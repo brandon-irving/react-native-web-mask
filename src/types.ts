@@ -13,6 +13,7 @@ export interface UseInputMaskProps {
   maskType?: MaskType;
   initialValue?: string;
   customMask?: (value: string) => string;
+  onChange?: (event: ChangeEvent<HTMLInputElement> | string) => void;
 }
 
 export interface UseInputMaskReturn {

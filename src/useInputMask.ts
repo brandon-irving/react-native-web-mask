@@ -119,6 +119,7 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
       const maskFn = getMaskFunction(maskType);
       setRawValue(clampedRaw);
       setMaskedValue(maskFn(clampedRaw));
+      props?.onChange?.(clampedRaw);
     },
     [maskType, getMaskFunction]
   );

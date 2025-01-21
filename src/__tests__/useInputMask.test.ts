@@ -147,4 +147,16 @@ describe("useInputMask", () => {
     expect(result.current.rawValue).toBe("5555555555");
     expect(result.current.maskedValue).toBe("5555555555");
   });
+  it("should call onChange with raw value", () => {
+    const onChangeMock = jest.fn();
+    const { result } = renderHook(() =>
+      useInputMask({ onChange: onChangeMock, maskType: "monthDay" })
+    );
+
+    act(() => {
+      result.current.setValue("1234");
+    });
+    expect(onChangeMock).toHaveBeenCalledWith("1234");
+    expect(result.current.maskedValue).toBe("12/34");
+  });
 });
