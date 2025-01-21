@@ -4,6 +4,18 @@ A **cross-platform** React and React Native hook for handling masked input field
 
 ---
 
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Reference](#api-reference)
+- [Mask Utilities](#mask-utilities)
+- [Mask Helper](#mask-helper)
+- [Full Examples](#full-examples)
+
+---
+
 ## ✨ Features
 
 - Supports **React** (Web) and **React Native**.
@@ -41,6 +53,157 @@ yarn  add  react-native-web-mask
 ---
 
 ### 🚀 Usage
+
+#### Hook
+
+```tsx
+import { useInputMask } from "react-native-web-mask";
+
+const { maskedValue, rawValue, onChange } = useInputMask({
+  maskType: "phone",
+  initialValue: props.value,
+  customMask: props.customMask,
+  onChange: props.onChange,
+});
+```
+
+#### Helpers
+
+```tsx
+import { insertChunks } from "react-native-web-mask";
+const dateString = insertChunks("10061991", [2, 2, 14], "/");
+// 10/06/1991
+```
+
+#### Utilities
+
+```tsx
+import { maskPhone } from "react-native-web-mask";
+const phoneString = maskPhone("1111111111");
+// (111) 111-1111
+```
+
+## API Reference
+
+### useInputMask({ maskType, initialValue, customMask, onChange } )
+
+| Prop         | Type                                                       | Description                                                   |
+| ------------ | ---------------------------------------------------------- | ------------------------------------------------------------- |
+| maskType     | MaskType                                                   | "phone", "money", "card", "zip", "date", "monthDay", "custom" |
+| initialValue | string                                                     | Optional initial value.                                       |
+| customMask   | (value: string) => string                                  | Custom mask function if maskType is 'custom'.                 |
+| onChange     | (event: ChangeEvent<HTMLInputElement> or string) => string | Callback to expose raw value to consumer for convenience.     |
+
+### Returns
+
+| Prop         | Type                                       | Description                      |
+| ------------ | ------------------------------------------ | -------------------------------- |
+| maskedValue  | string                                     | The returned masked string       |
+| rawValue     | string                                     | The users input string value     |
+| onChange     | (e: ChangeEvent<HTMLInputElement>) => void | Callback for web inputs          |
+| onChangeText | (text:string)=>void                        | Callback for React Native Inputs |
+
+## 🛠️ Mask Utilities
+
+### A utility is a function that performs an opinionated mask.
+
+### `maskDate`
+
+- **Description**: Formats a value as a date in the format MM/DD/YYYY.
+
+- **Signature**: `maskDate(value: string): string`
+
+- **Example**: `maskDate("12345678") // => "01/23/4567"
+
+### `maskMoney`
+
+- **Description**: Formats a value as a decimal number in the format 0.00.
+
+- **Signature**: `maskMoney(value: string): string`
+
+- **Example**: `maskMoney("123456") // => "1,234.56"
+
+### `maskPhone`
+
+- **Description**: Formats a value as a phone number in the format (###) ###-####.
+
+- **Signature**: `maskPhone(value: string): string`
+
+- **Example**: `maskPhone("1234567890") // => "(123) 456-7890"
+
+### `maskMonthDay`
+
+- **Description**: Formats a value as a month/day in the format MM/DD.
+
+- **Signature**: `maskMonthDay(value: string): string`
+
+- **Example**: `maskMonthDay("1231") // => "12/31"
+
+### `maskCard`
+
+- **Description**: Formats a value as a credit card number in the format XXXX XXXX XXXX XXXX.
+
+- **Signature**: `maskCard(value: string): string`
+
+- **Example**: `maskCard("1234567890123456") // => "1234 5678 9012 3456"
+
+### `maskZip`
+
+- **Description**: Formats a value as a zip code in the format 12345-6789.
+
+- **Signature**: `maskZip(value: string): string`
+
+- **Example**: `maskZip("123456789") // => "12345-6789"
+
+## 🛠️ Mask Helper
+
+### A mask helper is a function that's used to build a mask utility! They are common string manipulations that can be used for various masks
+
+### `insertChunks`
+
+- **Description**: Inserts a separator (e.g., '/') between chunks of specified sizes.
+
+- **Signature**: `insertChunks(value: string, chunkSizes: number[], separator: string): string`
+
+- **Example**: `insertChunks("12345", [2, 2, 1], "/") // => "12/34/5"
+
+### `stripNonDigits`
+
+- **Description**: Strips all non-digit characters from a string.
+
+- **Signature**: `stripNonDigits(value: string): string`
+
+### `clampDigits`
+
+- **Description**: Clamps a numeric string (after parsing to a number) within a min and max range.
+
+- **Signature**: `clampDigits(numericString: string, min: number, max: number): string`
+
+- **Example**: `clampDigits("13", 1, 12) // => "12"
+
+### `applyRegexReplace`
+
+- **Description**: A flexible RegExp replace helper.
+
+- **Signature**: `applyRegexReplace(value: string, pattern: RegExp, replaceWith: string): string`
+
+- **Example**: `applyRegexReplace("12345", /\d/g, "\*") // => "**\***"
+
+### `limitLength`
+
+- **Description**: Ensures the string doesn't exceed a certain length.
+
+- **Signature**: `limitLength(value: string, maxLength: number): string`
+
+### `parseCurrencyToNumber`
+
+- **Description**: Extracts the decimal equivalent from a currency string.
+
+- **Signature**: `parseCurrencyToNumber(currency: string): number`
+
+---
+
+# 🚀 Full Examples
 
 ## React Web Example
 
@@ -155,123 +318,6 @@ function CustomMaskInput() {
 
 export default CustomMaskInput;
 ```
-
-## API Reference
-
-### useInputMask({ maskType, initialValue, customMask } )
-
-| Prop         | Type                      | Description                                                   |
-| ------------ | ------------------------- | ------------------------------------------------------------- |
-| maskType     | MaskType                  | "phone", "money", "card", "zip", "date", "monthDay", "custom" |
-| initialValue | string                    | Optional initial value.                                       |
-| customMask   | (value: string) => string | Custom mask function if maskType is 'custom'.                 |
-
-### Returns
-
-| Prop         | Type                                       | Description                      |
-| ------------ | ------------------------------------------ | -------------------------------- |
-| maskedValue  | string                                     | The returned masked string       |
-| rawValue     | string                                     | The users input string value     |
-| onChange     | (e: ChangeEvent<HTMLInputElement>) => void | Callback for web inputs          |
-| onChangeText | (text:string)=>void                        | Callback for React Native Inputs |
-
-## 🛠️ Mask Utilities
-
-### A utility is a function that performs an opinionated mask.
-
-### `maskDate`
-
-- **Description**: Formats a value as a date in the format MM/DD/YYYY.
-
-- **Signature**: `maskDate(value: string): string`
-
-- **Example**: `maskDate("12345678") // => "01/23/4567"
-
-### `maskMoney`
-
-- **Description**: Formats a value as a decimal number in the format 0.00.
-
-- **Signature**: `maskMoney(value: string): string`
-
-- **Example**: `maskMoney("123456") // => "1,234.56"
-
-### `maskPhone`
-
-- **Description**: Formats a value as a phone number in the format (###) ###-####.
-
-- **Signature**: `maskPhone(value: string): string`
-
-- **Example**: `maskPhone("1234567890") // => "(123) 456-7890"
-
-### `maskMonthDay`
-
-- **Description**: Formats a value as a month/day in the format MM/DD.
-
-- **Signature**: `maskMonthDay(value: string): string`
-
-- **Example**: `maskMonthDay("1231") // => "12/31"
-
-### `maskCard`
-
-- **Description**: Formats a value as a credit card number in the format XXXX XXXX XXXX XXXX.
-
-- **Signature**: `maskCard(value: string): string`
-
-- **Example**: `maskCard("1234567890123456") // => "1234 5678 9012 3456"
-
-### `maskZip`
-
-- **Description**: Formats a value as a zip code in the format 12345-6789.
-
-- **Signature**: `maskZip(value: string): string`
-
-- **Example**: `maskZip("123456789") // => "12345-6789"
-
-## 🛠️ Mask Helper
-
-### A mask helper is a function that's used to build a mask utility! They are common string manipulations that can be used for various masks
-
-### `insertChunks`
-
-- **Description**: Inserts a separator (e.g., '/') between chunks of specified sizes.
-
-- **Signature**: `insertChunks(value: string, chunkSizes: number[], separator: string): string`
-
-- **Example**: `insertChunks("12345", [2, 2, 1], "/") // => "12/34/5"
-
-### `stripNonDigits`
-
-- **Description**: Strips all non-digit characters from a string.
-
-- **Signature**: `stripNonDigits(value: string): string`
-
-### `clampDigits`
-
-- **Description**: Clamps a numeric string (after parsing to a number) within a min and max range.
-
-- **Signature**: `clampDigits(numericString: string, min: number, max: number): string`
-
-- **Example**: `clampDigits("13", 1, 12) // => "12"
-
-### `applyRegexReplace`
-
-- **Description**: A flexible RegExp replace helper.
-
-- **Signature**: `applyRegexReplace(value: string, pattern: RegExp, replaceWith: string): string`
-
-- **Example**: `applyRegexReplace("12345", /\d/g, "\*") // => "**\***"
-
-### `limitLength`
-
-- **Description**: Ensures the string doesn't exceed a certain length.
-
-- **Signature**: `limitLength(value: string, maxLength: number): string`
-
-### `parseCurrencyToNumber`
-
-- **Description**: Extracts the decimal equivalent from a currency string.
-
-- **Signature**: `parseCurrencyToNumber(currency: string): number`
 
 ## 📄 License
 
