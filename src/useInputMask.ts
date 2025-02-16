@@ -17,31 +17,10 @@ import {
   UseInputMaskReturn,
 } from "./types";
 
-/**
- * Hook to handle input masking for React web and React Native.
- * @see https://github.com/birvingfau/react-native-web-mask
- * @see https://github.com/birvingfau/react-native-web-mask/issues
- * @see https://github.com/birvingfau/react-native-web-mask#readme
- * @param {UseInputMaskProps} props
- * @returns {UseInputMaskReturn}
- * @example
- * // React web
- * const { rawValue, maskedValue, onChange } = useInputMask({ maskType: "phone" });
- * return (
- *   <input type="text" value={maskedValue} onChange={onChange} />
- * )
- *
- * // React Native
- * const { rawValue, maskedValue, onChangeText } = useInputMask({ maskType: "phone" });
- * return (
- *   <TextInput value={maskedValue} onChangeText={onChangeText} />
- * )
- */
 export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
-  const { maskType, initialValue = "", customMask } = props || {};
-  const [rawValue, setRawValue] = useState<string>(initialValue);
+  const { maskType, initialValue = "", customMask, onChange } = props || {};
 
-  // Helper to pick the correct mask function
+  // Returns the mask function based on the mask type.
   const getMaskFunction = useCallback(
     (type: MaskType): MaskFn => {
       switch (type) {
@@ -66,70 +45,62 @@ export function useInputMask(props?: UseInputMaskProps): UseInputMaskReturn {
     [customMask]
   );
 
-  const [maskedValue, setMaskedValue] = useState<string>(() => {
-    const clampValue = clampRawValueByMaskType(
-      maskType || "custom",
-      initialValue
-    );
-    const maskFn = getMaskFunction(maskType || "custom");
-    return maskFn(clampValue);
-  });
-
-  const handleValueChange = useCallback(
-    (input: string | ChangeEvent<HTMLInputElement>) => {
-      let newRawValue: string;
-
-      if (typeof input === "object" && "target" in input) {
-        newRawValue = input.target.value;
-      } else {
-        newRawValue = input as string;
-      }
-
+  // Computes the clamped raw value and the corresponding masked value.
+  // In the "money" case, we parse the masked value back into a fixed-decimal string.
+  const computeValues = useCallback(
+    (value: string) => {
       if (!maskType) {
-        setRawValue(newRawValue);
-        setMaskedValue(newRawValue);
-        props?.onChange?.(newRawValue);
-        return;
+        return { raw: value, masked: value };
       }
-
-      newRawValue = clampRawValueByMaskType(maskType, newRawValue);
-
+      const clamped = clampRawValueByMaskType(maskType, value);
       const maskFn = getMaskFunction(maskType);
-      const newMaskedValue = maskFn(newRawValue);
-
-      if (maskType === "money") {
-        const parsedValue = parseCurrencyToNumber(newMaskedValue); // Parse back the raw number
-        setRawValue(parsedValue.toFixed(2)); // Store as a decimal (e.g., "100.00")
-      } else {
-        setRawValue(newRawValue);
-      }
-      props?.onChange?.(newRawValue);
-      setMaskedValue(newMaskedValue);
-    },
-    [getMaskFunction, maskType]
-  );
-
-  const setValue = useCallback(
-    (newRaw: string) => {
-      if (!maskType) {
-        setRawValue(newRaw);
-        setMaskedValue(newRaw);
-        return;
-      }
-      const clampedRaw = clampRawValueByMaskType(maskType, newRaw);
-      const maskFn = getMaskFunction(maskType);
-      setRawValue(clampedRaw);
-      setMaskedValue(maskFn(clampedRaw));
-      props?.onChange?.(clampedRaw);
+      const masked = maskFn(clamped);
+      const raw =
+        maskType === "money"
+          ? parseCurrencyToNumber(masked).toFixed(2)
+          : clamped;
+      return { raw, masked };
     },
     [maskType, getMaskFunction]
   );
 
+  // Initialize state using the computed masked value.
+  const [rawValue, setRawValue] = useState<string>(initialValue);
+  const [maskedValue, setMaskedValue] = useState<string>(() => {
+    return computeValues(initialValue).masked;
+  });
+
+  // Handles the value change from either a text event or a string value.
+  const handleValueChange = useCallback(
+    (input: string | ChangeEvent<HTMLInputElement>) => {
+      const value =
+        typeof input === "object" && "target" in input
+          ? input.target.value
+          : input;
+      const { raw, masked } = computeValues(value);
+      setRawValue(raw);
+      setMaskedValue(masked);
+      onChange?.(raw);
+    },
+    [computeValues, onChange]
+  );
+
+  // Allows programmatic updates of the input value.
+  const setValue = useCallback(
+    (newRaw: string) => {
+      const { raw, masked } = computeValues(newRaw);
+      setRawValue(raw);
+      setMaskedValue(masked);
+      onChange?.(raw);
+    },
+    [computeValues, onChange]
+  );
+
   return {
-    maskedValue,
     rawValue,
-    onChange: (e: ChangeEvent<HTMLInputElement>) => handleValueChange(e),
-    onChangeText: (text: string) => handleValueChange(text),
+    maskedValue,
+    onChange: handleValueChange,
+    onChangeText: handleValueChange,
     setValue,
   };
 }
